@@ -1,18 +1,20 @@
+import { useState } from "react";
 import { Alert, FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Participant } from "../../components/Participant";
 import { styles } from "./styles";
 
 export function Home() {
-    const participantes = ['Joao'];
-    //const participantes = [];
+    const [participants, setParticipants] = useState<string[]>([]);
+    const [participantName, setParticipantName] = useState('');
 
     function handleParticipantAdd() {
-        if (participantes.includes("Rodrigo")) {
+        if (participants.includes(participantName)) {
             return Alert.alert("Participante existente", "Este participante já está na lista ");
         }
-        participantes.push("Ana");
-        console.log(participantes);
-        
+
+
+        setParticipants(prevState => [...prevState, participantName]);
+        setParticipantName('');  
 
     }
 
@@ -20,7 +22,7 @@ export function Home() {
         Alert.alert("Remover", `Remover participante ${name} ?`, [
             {
                text: 'Sim',
-                onPress: () => Alert.alert('Usuário deletado!')
+                onPress: () => setParticipants(prevState => prevState.filter(participant => participant != name))
             },
             {
                 text: 'Não',
@@ -31,6 +33,7 @@ export function Home() {
         // console.log(`Removido: ${name}`);
 
     }
+
     //ScrollView :  vai renderizar apenas os objetos mostrados ( ele nao renderiza tudo de uma vez)
 
     return (
@@ -43,6 +46,8 @@ export function Home() {
                     style={styles.input}
                     placeholder="Nome do participante"
                     placeholderTextColor="#6b6b6b"
+                    onChangeText={setParticipantName}
+                    value={participantName}
                 // keyboardType="numeric"
                 />
 
@@ -54,7 +59,7 @@ export function Home() {
             {/* <ScrollView showsVerticalScrollIndicator={false} > */}
             
             <FlatList
-                data={participantes}
+                data={participants}
                 keyExtractor={item => item}
                 showsVerticalScrollIndicator={false}
                 ListEmptyComponent={() => (
